@@ -1,10 +1,11 @@
 import React, { SyntheticEvent } from "react";
-import { Dropdown, Stack } from "react-bootstrap";
+import { ButtonGroup, Dropdown, Stack, ToggleButton } from "react-bootstrap";
 import AttributeInputForm from "./AttributeInputForm";
 import AttributeListForm from "./AttributeListForm";
 
 type PageInputFormProps = {
     nameChangedCallback: (e: string) => void
+    onVerify: (idx: number) => void
 }
 
 type PageInputFormState = {
@@ -13,15 +14,17 @@ type PageInputFormState = {
     workingSet: boolean
     targetRequester: string
 
-    reference: React.RefObject<AttributeListForm> | null
+    
 }
 
 
 class PageInputForm extends React.Component<PageInputFormProps, PageInputFormState> {
+    reference: AttributeListForm | null = null
+
     constructor(props: PageInputFormProps) {
         super(props)
 
-        this.state = { name: '', uriCondition: '', workingSet: true, targetRequester: '', reference: null }
+        this.state = { name: '', uriCondition: '', workingSet: true, targetRequester: '' }
 
         this.onNameChanged = this.onNameChanged.bind(this)
         this.onUriConditionChanged = this.onUriConditionChanged.bind(this)
@@ -55,10 +58,10 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
     render() {
         return (
             <div>
-                <h2>Setup for page: {this.state.name}</h2>
+                <h1>Setup for page: {this.state.name}</h1>
                 <p>Please see documentation for further infomation</p>
-                <Stack gap={3}>
-                    <div className="bg-light border">
+                <Stack gap={5}>
+                    <div>
                         <p>Name:</p>
                         <input
                             type="text"
@@ -66,7 +69,7 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
                             onChange={this.onNameChanged}
                         />
                     </div>
-                    <div className="bg-light border">
+                    <div>
                         <p>UriCondition:</p>
                         <input
                             type="text"
@@ -75,7 +78,7 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
                         />
                     </div>
 
-                    <div className="bg-light border">
+                    <div>
                         <p>TargetRequester:</p>
                         <input
                             type="text"
@@ -83,23 +86,26 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
                             onChange={this.onTargetRequesterChanged}
                         />
                     </div>
-
-                    <div className="bg-light border">
+                    <div>
                         <div className="working-set-select">
-                            <Dropdown>
-                                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                    WorkingSet Mode:
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={this.onWorkingSetEnabledClicked}>Enabled</Dropdown.Item>
-                                    <Dropdown.Item onClick={this.onWorkingSetDisabledClicked}>Disabled</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            <ButtonGroup className="mb-2">
+                                <ToggleButton
+                                    id="toggle-check"
+                                    type="checkbox"
+                                    variant="outline-primary"
+                                    checked={this.state.workingSet}
+                                    value="1"
+                                    onChange={(e) => { if (!this.state.workingSet) { this.onWorkingSetEnabledClicked(e) } else { this.onWorkingSetDisabledClicked(e) } }}
+                                >
+                                    Working Set
+                                </ToggleButton>
+                            </ButtonGroup>
+                            {this.state.workingSet ? " ✔ Working Set Enabled" : "  Working Set Disabled"}
                         </div>
                     </div>
                 </Stack>
-                <AttributeListForm ref={this.state.reference}>
+                <br />
+                <AttributeListForm ref={r => this.reference = r} onVerify={this.props.onVerify}>
 
                 </AttributeListForm>
             </div>

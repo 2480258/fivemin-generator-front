@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from "react";
-import { Button } from "react-bootstrap";
+import { Accordion, Button, Stack } from "react-bootstrap";
 
 
 type ExportPageAttributeFormatProps = {
@@ -34,7 +34,7 @@ class ExportFormat extends React.Component<ExportFormatProps, ExportFormatState>
     constructor(props: ExportFormatProps) {
         super(props)
 
-        this.state = {exportPages: []}
+        this.state = { exportPages: [] }
         this.onButtonClick = this.onButtonClick.bind(this)
     }
 
@@ -50,8 +50,19 @@ class ExportFormat extends React.Component<ExportFormatProps, ExportFormatState>
     render() {
         return (
             <div>
-                {this.state.exportPages}
-
+                <Accordion defaultActiveKey={['0']} alwaysOpen>
+                    {this.state.exportPages.map((d, idx) => {
+                        return (
+                            <Accordion.Item eventKey={idx.toString()}>
+                                <Accordion.Header><h3>Export Page #{idx}</h3></Accordion.Header>
+                                <Accordion.Body>
+                                    {d}
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        )
+                    })}
+                </Accordion>
+                
                 <Button onClick={this.onButtonClick}>Add Export Page</Button>
             </div>
         )
@@ -129,21 +140,26 @@ class ExportPageFormat extends React.Component<ExportPageFormatProps, ExportPage
     render() {
         return (
             <div>
-                <p>PageName:</p>
-                <input type="text" value={this.state.pageName} onChange={this.onNameChanged} />
-
-                <p>TargettedAttributes:</p>
-                {this.state.targetAttributeName}
-
-
-                <Button onClick={this.onButtonClick}>Add Targetted Attributes</Button>
-
-
-                <p>Adapter:</p>
-                <input type="text" value={this.state.mode} onChange={this.onModeChanged} />
-
-                <p>File Name Expression:</p>
-                <input type="text" value={this.state.fileNameExp} onChange={this.onExpChanged} />
+                <Stack gap={5}>
+                    <div>
+                        <p>PageName:</p>
+                        <input type="text" value={this.state.pageName} onChange={this.onNameChanged} />
+                    </div>
+                    <div>
+                        <p>TargettedAttributes:</p>
+                        {this.state.targetAttributeName}
+                        <br />
+                        <Button onClick={this.onButtonClick}>Add Targetted Attributes</Button>
+                    </div>
+                    <div>
+                        <p>Adapter:</p>
+                        <input type="text" value={this.state.mode} onChange={this.onModeChanged} />
+                    </div>
+                    <div>
+                        <p>File Name Expression:</p>
+                        <input type="text" value={this.state.fileNameExp} onChange={this.onExpChanged} />
+                    </div>
+                </Stack>
             </div>
         )
     }

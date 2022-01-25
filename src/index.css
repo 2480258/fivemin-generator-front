@@ -12,23 +12,38 @@ code {
     monospace;
 }
 
+.attribute-panel {
+  float: left;
+  width: 50%;
+}
 
 .html-box {
   float: right;
-  border: 3px solid #73AD21;
   width: 50%;
 }
 
 .html-box-text-area {
   width: 100%;
-  height: 47vh;
+  height: 43vh;
 }
 
 .html-highlighter {
-  height: 47vh;
+  height: 43vh;
+}
+
+.html-uri {
+  width: 100%;
 }
 
 .page-tab-content {
   margin-top: 10px;
   margin-left: 10px;
+}
+
+textarea {
+  resize: none;
+} 
+
+.modal-dialog{
+  z-index: 100000 !important;
 }

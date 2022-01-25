@@ -6,7 +6,6 @@ import PageInputForm from "./PageInputForm";
 import PagePlane from "./PagePlane";
 import RequesterFormat from "./RequesterFormat";
 
-
 type PageTabProps = {
 
 }
@@ -60,39 +59,41 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
 
     render() {
         return (
-            <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
-                <Tab eventKey="requester" title="Web Request Setting">
-                    <div className="page-tab-content">
-                        <RequesterFormat>
+            <div>
+                <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
+                    <Tab eventKey="requester" title="Web Request Setting">
+                        <div className="page-tab-content">
+                            <RequesterFormat>
 
-                        </RequesterFormat>
-                    </div>
-                </Tab>
+                            </RequesterFormat>
+                        </div>
+                    </Tab>
 
 
-                {this.state.pageList.map((d, idx) => {
-                    return (
-                        <Tab eventKey={idx} title={"Page: " + d.name}>
-                            <div className="page-tab-content">
-                                {d.element}
-                            </div>
-                        </Tab>)
-                })}
-                <Tab eventKey="add" title="Add Page">
-                    <div className="page-tab-content">
-                        <Button onClick={this.onClick}>Add Page</Button>
-                    </div>
-                </Tab>
+                    {this.state.pageList.map((d, idx) => {
+                        return (
+                            <Tab eventKey={idx} title={"Page: " + d.name}>
+                                <div className="page-tab-content">
+                                    {d.element}
+                                </div>
+                            </Tab>)
+                    })}
+                    <Tab eventKey="add" title="Add Page">
+                        <div className="page-tab-content">
+                            <Button onClick={this.onClick}>Add Page</Button>
+                        </div>
+                    </Tab>
 
-                <Tab eventKey="exporter" title="Export Setting">
+                    <Tab eventKey="exporter" title="Export Setting">
 
-                    <div className="page-tab-content">
-                        <ExportFormat>
+                        <div className="page-tab-content">
+                            <ExportFormat>
 
-                        </ExportFormat>
-                    </div>
-                </Tab>
-            </Tabs>
+                            </ExportFormat>
+                        </div>
+                    </Tab>
+                </Tabs>
+            </div>
         )
     }
 }

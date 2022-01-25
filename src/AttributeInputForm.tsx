@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from "react";
-import { Dropdown } from "react-bootstrap";
+import { Button, ButtonGroup, Dropdown, Stack, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import AttributeListForm from "./AttributeListForm";
 
 type AttributeSelectButtonProps = {
@@ -12,15 +12,16 @@ type AttributeSelectButtonState = {
 }
 
 type AttributeInputFormProps = {
+    onVerify: () => void
     id: number
 }
 
 type AttributeInputFormState = {
-    type: JSX.Element
+    type: string
 }
 
 type InternalAttributeFromProps = {
-
+    onVerify: () => void
 }
 
 type InternalAttributeFormState = {
@@ -31,7 +32,7 @@ type InternalAttributeFormState = {
 
 
 type ExternalAttributeFromProps = {
-
+    onVerify: () => void
 }
 
 type ExternalAttributeFormState = {
@@ -42,13 +43,17 @@ type ExternalAttributeFormState = {
 
 
 type LinkAttributeFromProps = {
-
+    onVerify: () => void
 }
 
 type LinkAttributeFormState = {
     name: string
     regex: string
     uriRegex: string
+}
+
+interface AttributeJsonConvertable {
+
 }
 
 class AttributeSelectButton extends React.Component<AttributeSelectButtonProps, AttributeSelectButtonState> {
@@ -59,7 +64,7 @@ class AttributeSelectButton extends React.Component<AttributeSelectButtonProps, 
     constructor(props: AttributeSelectButtonProps) {
         super(props)
 
-        this.state = { type: "Internal" }
+        this.state = { type: this.INTERNAL_ATTRIBUTE }
 
         this.onInternalClick = this.onInternalClick.bind(this)
         this.onExternalClick = this.onExternalClick.bind(this)
@@ -67,39 +72,53 @@ class AttributeSelectButton extends React.Component<AttributeSelectButtonProps, 
     }
 
     onInternalClick(e: SyntheticEvent<HTMLElement>) {
+        this.setState({
+            type: this.INTERNAL_ATTRIBUTE
+        })
+
         this.props.onButtonChanged(this.INTERNAL_ATTRIBUTE)
     }
 
     onExternalClick(e: SyntheticEvent<HTMLElement>) {
+        this.setState({
+            type: this.EXTERNAL_ATTRIBUTE
+        })
+
         this.props.onButtonChanged(this.EXTERNAL_ATTRIBUTE)
     }
 
     onLinkClick(e: SyntheticEvent<HTMLElement>) {
+        this.setState({
+            type: this.LINK_ATTRIBUTE
+        })
+
         this.props.onButtonChanged(this.LINK_ATTRIBUTE)
     }
 
     render() {
         return (
-            <div className="attribute-type-select" key={this.props.id}>
-                <Dropdown>
-                    <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        Select Attribute Type
-                    </Dropdown.Toggle>
+            <div className="attribute-type-select">
+                <ButtonGroup>
+                    <ToggleButton value={this.INTERNAL_ATTRIBUTE} type="radio" onClick={this.onInternalClick} active={this.state.type === this.INTERNAL_ATTRIBUTE}>
+                        Internal
+                    </ToggleButton>
 
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={this.onInternalClick}>Internal</Dropdown.Item>
-                        <Dropdown.Item onClick={this.onExternalClick}>External</Dropdown.Item>
-                        <Dropdown.Item onClick={this.onLinkClick}>Link</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
+                    <ToggleButton value={this.EXTERNAL_ATTRIBUTE} type="radio" onClick={this.onExternalClick} active={this.state.type === this.EXTERNAL_ATTRIBUTE}>
+                        External
+                    </ToggleButton>
+
+                    <ToggleButton value={this.LINK_ATTRIBUTE} type="radio" onClick={this.onLinkClick} active={this.state.type === this.LINK_ATTRIBUTE}>
+                        Link
+                    </ToggleButton>
+                </ButtonGroup>
             </div>
         )
     }
 }
 
 
-class LinkAttributeInputForm extends React.Component<ExternalAttributeFromProps, ExternalAttributeFormState> {
-    constructor(props: ExternalAttributeFromProps) {
+class LinkAttributeInputForm extends React.Component<LinkAttributeFromProps, LinkAttributeFormState> implements AttributeJsonConvertable {
+    constructor(props: LinkAttributeFromProps) {
         super(props)
 
         this.state = {
@@ -142,30 +161,35 @@ class LinkAttributeInputForm extends React.Component<ExternalAttributeFromProps,
         })
     }
 
-
-
     render() {
         return (
             <div>
-                <form onSubmit={this.onSubmit}>
-                    Name:
-                    <input type="text" value={this.state.name} onChange={this.onNameChange} />
-
-                    Regex:
-                    <input type="text" value={this.state.regex} onChange={this.onRegexChange} />
-
-                    UriRegex:
-                    <input type="text" value={this.state.uriRegex} onChange={this.onUriRegexChange} />
-
-                    <input type="submit" value="Submit" />
-                </form>
+                <Stack gap={5}>
+                    <div>
+                        <br />
+                        Name:<br />
+                        <input type="text" value={this.state.name} onChange={this.onNameChange} />
+                    </div>
+                    <div>
+                        Regex:<br />
+                        <input type="text" value={this.state.regex} onChange={this.onRegexChange} />
+                    </div>
+                    <div>
+                        UriRegex:<br />
+                        <input type="text" value={this.state.uriRegex} onChange={this.onUriRegexChange} />
+                        <br />
+                        <br />
+                    </div>
+                </Stack>
+                <br />
+                <Button onClick={this.props.onVerify}>Verify</Button>
             </div>
         )
     }
 }
 
 
-class ExternalAttributeInputForm extends React.Component<ExternalAttributeFromProps, ExternalAttributeFormState> {
+class ExternalAttributeInputForm extends React.Component<ExternalAttributeFromProps, ExternalAttributeFormState> implements AttributeJsonConvertable {
     constructor(props: ExternalAttributeFromProps) {
         super(props)
 
@@ -213,24 +237,35 @@ class ExternalAttributeInputForm extends React.Component<ExternalAttributeFromPr
     render() {
         return (
             <div>
-                <form onSubmit={this.onSubmit}>
-                    Name:
-                    <input type="text" value={this.state.name} onChange={this.onNameChange} />
-
-                    Regex:
-                    <input type="text" value={this.state.regex} onChange={this.onRegexChange} />
-
-                    UriRegex:
-                    <input type="text" value={this.state.uriRegex} onChange={this.onUriRegexChange} />
-
-                    <input type="submit" value="Submit" />
-                </form>
+                <Stack gap={5}>
+                    <div>
+                        <br />
+                        Name:<br />
+                        <input type="text" value={this.state.name} onChange={this.onNameChange} />
+                    </div>
+                    <div>
+                        Regex:<br />
+                        <input type="text" value={this.state.regex} onChange={this.onRegexChange} />
+                    </div>
+                    <div>
+                        UriRegex:<br />
+                        <input type="text" value={this.state.uriRegex} onChange={this.onUriRegexChange} />
+                        <br />
+                        <br />
+                    </div>
+                </Stack>
+                <br />
+                <Button onClick={this.props.onVerify}>Verify</Button>
             </div>
         )
     }
 }
 
-class InternalAttirbuteInputForm extends React.Component<InternalAttributeFromProps, InternalAttributeFormState> {
+class InternalAttirbuteInputForm extends React.Component<InternalAttributeFromProps, InternalAttributeFormState> implements AttributeJsonConvertable {
+    readonly OUTER_HTML = "OuterHtml"
+    readonly INNER_HTML = "InnerHtml"
+    readonly TEXT_CONTENT = "TextContent"
+
     constructor(props: InternalAttributeFromProps) {
         super(props)
 
@@ -245,7 +280,9 @@ class InternalAttirbuteInputForm extends React.Component<InternalAttributeFromPr
 
         this.onNameChange = this.onNameChange.bind(this)
         this.onRegexChange = this.onRegexChange.bind(this)
-        this.onParseModeChange = this.onParseModeChange.bind(this)
+        this.onClickOuterHtml = this.onClickOuterHtml.bind(this)
+        this.onClickInnerHtml = this.onClickInnerHtml.bind(this)
+        this.onClickTextContent = this.onClickTextContent.bind(this)
     }
 
     onSubmit(e: SyntheticEvent<HTMLFormElement>) {
@@ -267,34 +304,59 @@ class InternalAttirbuteInputForm extends React.Component<InternalAttributeFromPr
         })
     }
 
-    onParseModeChange(e: SyntheticEvent<HTMLInputElement>) {
+    onClickOuterHtml(e: SyntheticEvent<HTMLButtonElement>) {
         this.setState({
-            parseMode: e.currentTarget.value
+            parseMode: this.OUTER_HTML
         })
     }
 
+    onClickInnerHtml(e: SyntheticEvent<HTMLButtonElement>) {
+        this.setState({
+            parseMode: this.INNER_HTML
+        })
+    }
+
+    onClickTextContent(e: SyntheticEvent<HTMLButtonElement>) {
+        this.setState({
+            parseMode: this.TEXT_CONTENT
+        })
+    }
 
 
     render() {
         return (
             <div>
-                <form onSubmit={this.onSubmit}>
-                    Name:
-                    <input type="text" value={this.state.name} onChange={this.onNameChange} />
-
-                    Regex:
-                    <input type="text" value={this.state.regex} onChange={this.onRegexChange} />
-
-
-                    <div >
-                        ParseMode:
-                        <input type="radio" value="OuterHtml" name="type" onChange={this.onParseModeChange} /> OuterHtml
-                        <input type="radio" value="InnerHtml" name="type" onChange={this.onParseModeChange} /> InnerHtml
-                        <input type="radio" value="TextContent" name="type" onChange={this.onParseModeChange} /> TextContent
+                <Stack gap={5}>
+                    <div>
+                        <br />
+                        <p>Name:</p>
+                        <input type="text" value={this.state.name} onChange={this.onNameChange} />
                     </div>
+                    <div>
+                        <br />
+                        <p>Regex:</p>
+                        <input type="text" value={this.state.regex} onChange={this.onRegexChange} />
+                    </div>
+                    <div>
+                        <br />
+                        <p>Parse Mode:</p>
+                        <ButtonGroup>
+                            <ToggleButton value="OuterHtml" type="radio" onClick={this.onClickOuterHtml} active={this.state.parseMode === "OuterHtml"}>
+                                OuterHtml
+                            </ToggleButton>
 
-                    <input type="submit" value="Submit" />
-                </form>
+                            <ToggleButton value="InnerHtml" type="radio" onClick={this.onClickInnerHtml} active={this.state.parseMode === "InnerHtml"}>
+                                InnerHtml
+                            </ToggleButton>
+
+                            <ToggleButton value="TextContent" type="radio" onClick={this.onClickTextContent} active={this.state.parseMode === "TextContent"}>
+                                TextContent
+                            </ToggleButton>
+                        </ButtonGroup>
+                    </div>
+                </Stack>
+                <br />
+                <Button onClick={this.props.onVerify}>Verify</Button>
             </div>
         )
     }
@@ -305,38 +367,40 @@ class AttributeInputForm extends React.Component<AttributeInputFormProps, Attrib
     readonly EXTERNAL_ATTRIBUTE = "External"
     readonly LINK_ATTRIBUTE = "Link"
 
+    attributeReference: AttributeJsonConvertable | null = null
 
     constructor(props: AttributeInputFormProps) {
         super(props)
 
-        this.state = { type: <InternalAttirbuteInputForm></InternalAttirbuteInputForm> }
+        this.state = { type: this.INTERNAL_ATTRIBUTE }
 
         this.onAttributeTypeChanged = this.onAttributeTypeChanged.bind(this)
     }
 
 
     onAttributeTypeChanged(e: string) {
-        let attributeInput: JSX.Element
-        if (e === this.INTERNAL_ATTRIBUTE) {
-            attributeInput = <InternalAttirbuteInputForm></InternalAttirbuteInputForm>
-        } else if (e === this.EXTERNAL_ATTRIBUTE) {
-            attributeInput = <ExternalAttributeInputForm></ExternalAttributeInputForm>
-        } else if (e === this.LINK_ATTRIBUTE) {
-            attributeInput = <LinkAttributeInputForm></LinkAttributeInputForm>
-        } else {
-            attributeInput = <p>ERROR</p>
-        }
+        this.setState({ type: e })
+    }
 
-        this.setState({ type: attributeInput })
+    selectAttribute(e: string) {
+        if (e === this.INTERNAL_ATTRIBUTE) {
+            return <InternalAttirbuteInputForm onVerify={this.props.onVerify} ref={refs => this.attributeReference = refs}></InternalAttirbuteInputForm>
+        } else if (e === this.EXTERNAL_ATTRIBUTE) {
+            return <ExternalAttributeInputForm onVerify={this.props.onVerify} ref={refs => this.attributeReference = refs}></ExternalAttributeInputForm>
+        } else if (e === this.LINK_ATTRIBUTE) {
+            return <LinkAttributeInputForm onVerify={this.props.onVerify} ref={refs => this.attributeReference = refs}></LinkAttributeInputForm>
+        } else {
+            return <p>ERROR</p>
+        }
     }
 
 
     render() {
         return (
             <div>
-                <p>Select Attribute Type</p>
+                <h4>Select Attribute Type</h4>
                 <AttributeSelectButton onButtonChanged={this.onAttributeTypeChanged} id={this.props.id} ></AttributeSelectButton>
-                {this.state.type}
+                {this.selectAttribute(this.state.type)}
             </div>
         )
     }

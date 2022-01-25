@@ -1,3 +1,4 @@
+import { auto } from "@popperjs/core";
 import React, { SyntheticEvent } from "react";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -12,6 +13,7 @@ type HtmlBoxState = {
 }
 
 class HtmlBox extends React.Component<HtmlBoxProps, HtmlBoxState> {
+
     constructor(props: HtmlBoxProps) {
         super(props)
 
@@ -32,12 +34,16 @@ class HtmlBox extends React.Component<HtmlBoxProps, HtmlBoxState> {
     render() {
         return (
             <div className="html-box">
+                <p>URI for this page: </p>
                 <input
                     type="text"
                     value={this.state.uri}
                     onChange={this.onUriChanged}
+                    className="html-uri"
                 />
                 <br />
+                <br />
+                <p>HTML content for this page: </p>
                 <textarea
                     className="html-box-text-area"
                     value={this.state.html}
