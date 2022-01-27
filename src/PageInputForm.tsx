@@ -1,25 +1,26 @@
 import React, { SyntheticEvent } from "react";
-import { ButtonGroup, Dropdown, Stack, ToggleButton } from "react-bootstrap";
-import AttributeInputForm from "./AttributeInputForm";
+import { Button, ButtonGroup, Dropdown, Stack, ToggleButton } from "react-bootstrap";
+import AttributeInputForm, { HtmlData } from "./AttributeInputForm";
 import AttributeListForm from "./AttributeListForm";
+import PageTagListForm from "./PageTagListForm";
 
 type PageInputFormProps = {
     nameChangedCallback: (e: string) => void
-    onVerify: (idx: number) => void
+    getHtmlData: () => HtmlData
+    idx: number
 }
 
-type PageInputFormState = {
+export type PageInputFormState = {
     name: string
     uriCondition: string
     workingSet: boolean
     targetRequester: string
-
-    
 }
 
 
 class PageInputForm extends React.Component<PageInputFormProps, PageInputFormState> {
-    reference: AttributeListForm | null = null
+    attributeReference: AttributeListForm | null = null
+    tagReference: PageTagListForm | null = null
 
     constructor(props: PageInputFormProps) {
         super(props)
@@ -54,6 +55,9 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
         this.setState({ targetRequester: e.currentTarget.value })
     }
 
+    onUriVerify() {
+
+    }
 
     render() {
         return (
@@ -90,7 +94,7 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
                         <div className="working-set-select">
                             <ButtonGroup className="mb-2">
                                 <ToggleButton
-                                    id="toggle-check"
+                                    id={"toggle-check" + this.props.idx}
                                     type="checkbox"
                                     variant="outline-primary"
                                     checked={this.state.workingSet}
@@ -105,9 +109,12 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
                     </div>
                 </Stack>
                 <br />
-                <AttributeListForm ref={r => this.reference = r} onVerify={this.props.onVerify}>
+                <AttributeListForm ref={r => this.attributeReference = r} getHtmlData={this.props.getHtmlData}>
 
                 </AttributeListForm>
+                <PageTagListForm getHtmlData={this.props.getHtmlData} ref={refs => this.tagReference = refs}>
+
+                </PageTagListForm>
             </div>
         )
     }

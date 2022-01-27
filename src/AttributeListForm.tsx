@@ -1,7 +1,7 @@
 import React, { SyntheticEvent } from "react";
 import { Accordion } from "react-bootstrap";
 import AccordionItem from "react-bootstrap/esm/AccordionItem";
-import AttributeInputForm from "./AttributeInputForm";
+import AttributeInputForm, { HtmlData } from "./AttributeInputForm";
 import AttributeInputFormProps from "./AttributeInputForm"
 import AttributeInputFormState from "./AttributeInputForm"
 
@@ -11,7 +11,7 @@ type AttributeWithRef = {
 }
 
 type AttributeListFormProps = {
-    onVerify: (idx: number) => void
+    getHtmlData: () => HtmlData
 }
 
 type AttributeListFormState = {
@@ -42,18 +42,6 @@ class AttributeListForm extends React.Component<AttributeListFormProps, Attribut
         }))
     }
 
-    //addAttribute() {
-    //    let attributeRef: AttributeInputForm | null = null
-    //    let props = { key: this.state.attributeList.length, id: this.state.attributeList.length, onVerify: () => this.props.onVerify(this.state.attributeList.length) }
-    //    const elem = React.createElement(AttributeInputForm, 
-    //        { ...props, 
-    //            ref: (refs) => attributeRef = refs,  })
-    //    this.setState((prevState) => ({
-    //        attributeList: prevState.attributeList.concat(elem)
-    //    }))
-    //    this.attributeRefList.push(attributeRef)
-    //}
-
     addRefList = (element: any) => {
         this.attributeRefList.push(element)
     };
@@ -71,7 +59,7 @@ class AttributeListForm extends React.Component<AttributeListFormProps, Attribut
                                 </Accordion.Header>
                                 <Accordion.Body>
                                     <div key={idx}>
-                                        <AttributeInputForm key={idx} id={idx} onVerify={this.props.onVerify.bind(this, idx)} ref={this.addRefList}></AttributeInputForm>
+                                        <AttributeInputForm key={idx} id={idx} getHtmlData={this.props.getHtmlData} ref={this.addRefList}></AttributeInputForm>
                                     </div>
                                 </Accordion.Body>
                             </Accordion.Item>

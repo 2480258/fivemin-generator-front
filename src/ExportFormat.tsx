@@ -16,7 +16,7 @@ type ExportPageFormatProps = {
 
 type ExportPageFormatState = {
     pageName: string
-    targetAttributeName: Array<JSX.Element>
+    targetAttributeNameCount: number
 
     mode: string
     fileNameExp: string
@@ -31,6 +31,8 @@ type ExportFormatState = {
 }
 
 class ExportFormat extends React.Component<ExportFormatProps, ExportFormatState> {
+    exportPageRef: Array<ExportPageFormat | null> = []
+
     constructor(props: ExportFormatProps) {
         super(props)
 
@@ -40,7 +42,7 @@ class ExportFormat extends React.Component<ExportFormatProps, ExportFormatState>
 
 
     onButtonClick(e: SyntheticEvent<HTMLButtonElement>) {
-        const elem = React.createElement(ExportPageFormat, {}, {})
+        const elem = React.createElement(ExportPageFormat, { ref: refs => this.exportPageRef.push(refs) }, {})
 
         this.setState((prevState) => ({
             exportPages: prevState.exportPages.concat(elem)
@@ -62,7 +64,7 @@ class ExportFormat extends React.Component<ExportFormatProps, ExportFormatState>
                         )
                     })}
                 </Accordion>
-                
+
                 <Button onClick={this.onButtonClick}>Add Export Page</Button>
             </div>
         )
@@ -96,10 +98,12 @@ class ExportPageAttributeFormat extends React.Component<ExportPageAttributeForma
 }
 
 class ExportPageFormat extends React.Component<ExportPageFormatProps, ExportPageFormatState> {
+    targetAttributeNameRef: Array<ExportPageAttributeFormat | null> = []
+    
     constructor(props: ExportPageFormatProps) {
         super(props)
 
-        this.state = { pageName: '', targetAttributeName: [], mode: '', fileNameExp: '' }
+        this.state = { pageName: '', targetAttributeNameCount: 0, mode: '', fileNameExp: '' }
 
         this.onNameChanged = this.onNameChanged.bind(this)
         this.onModeChanged = this.onModeChanged.bind(this)
@@ -127,15 +131,10 @@ class ExportPageFormat extends React.Component<ExportPageFormatProps, ExportPage
     }
 
     onButtonClick(e: SyntheticEvent<HTMLButtonElement>) {
-        const elem = React.createElement(ExportPageAttributeFormat, {}, {})
-
         this.setState((prevState) => ({
-            targetAttributeName: prevState.targetAttributeName.concat(elem)
+            targetAttributeNameCount: prevState.targetAttributeNameCount + 1
         }))
     }
-
-
-
 
     render() {
         return (
@@ -147,7 +146,13 @@ class ExportPageFormat extends React.Component<ExportPageFormatProps, ExportPage
                     </div>
                     <div>
                         <p>TargettedAttributes:</p>
-                        {this.state.targetAttributeName}
+                        {Array.from(Array(this.state.targetAttributeNameCount).keys()).map((_, idx) => {
+                            return (
+                                <ExportPageAttributeFormat ref = {refs => this.targetAttributeNameRef.push(refs)}>
+
+                                </ExportPageAttributeFormat>
+                            )
+                        })}
                         <br />
                         <Button onClick={this.onButtonClick}>Add Targetted Attributes</Button>
                     </div>

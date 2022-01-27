@@ -1,6 +1,13 @@
 import React, { SyntheticEvent } from "react";
 import { Button, ButtonGroup, Dropdown, Stack, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import AttributeListForm from "./AttributeListForm";
+import AttributeVerifyAlert from "./AttributeVerifyAlert";
+import VerifyDataService from "./VerifyDataService";
+
+export type HtmlData = {
+    html: string,
+    uri: string
+}
 
 type AttributeSelectButtonProps = {
     onButtonChanged: (msg: string) => void
@@ -12,7 +19,7 @@ type AttributeSelectButtonState = {
 }
 
 type AttributeInputFormProps = {
-    onVerify: () => void
+    getHtmlData: () => HtmlData
     id: number
 }
 
@@ -21,10 +28,10 @@ type AttributeInputFormState = {
 }
 
 type InternalAttributeFromProps = {
-    onVerify: () => void
+    getHtmlData: () => HtmlData
 }
 
-type InternalAttributeFormState = {
+export type InternalAttributeFormState = {
     name: string
     regex: string
     parseMode: string
@@ -32,10 +39,10 @@ type InternalAttributeFormState = {
 
 
 type ExternalAttributeFromProps = {
-    onVerify: () => void
+    getHtmlData: () => HtmlData
 }
 
-type ExternalAttributeFormState = {
+export type ExternalAttributeFormState = {
     name: string
     regex: string
     uriRegex: string
@@ -43,7 +50,7 @@ type ExternalAttributeFormState = {
 
 
 type LinkAttributeFromProps = {
-    onVerify: () => void
+    getHtmlData: () => HtmlData
 }
 
 type LinkAttributeFormState = {
@@ -118,6 +125,8 @@ class AttributeSelectButton extends React.Component<AttributeSelectButtonProps, 
 
 
 class LinkAttributeInputForm extends React.Component<LinkAttributeFromProps, LinkAttributeFormState> implements AttributeJsonConvertable {
+    attributeVerifyAlertRef : AttributeVerifyAlert | null = null
+
     constructor(props: LinkAttributeFromProps) {
         super(props)
 
@@ -127,37 +136,47 @@ class LinkAttributeInputForm extends React.Component<LinkAttributeFromProps, Lin
             uriRegex: ""
         }
 
-
-        this.onSubmit = this.onSubmit.bind(this)
-
         this.onNameChange = this.onNameChange.bind(this)
         this.onRegexChange = this.onRegexChange.bind(this)
         this.onUriRegexChange = this.onUriRegexChange.bind(this)
+        this.onVerify = this.onVerify.bind(this)
 
-    }
-
-    onSubmit(e: SyntheticEvent<HTMLFormElement>) {
-        e.preventDefault()
-
-        alert('submitted' +
-            (this.state.name + this.state.regex + this.state.uriRegex))
     }
 
     onNameChange(e: SyntheticEvent<HTMLInputElement>) {
         this.setState({
             name: e.currentTarget.value
         })
+        
+        this.attributeVerifyAlertRef?.onAttributeChanged()
     }
 
     onRegexChange(e: SyntheticEvent<HTMLInputElement>) {
         this.setState({
             regex: e.currentTarget.value
         })
+
+        this.attributeVerifyAlertRef?.onAttributeChanged()
     }
 
     onUriRegexChange(e: SyntheticEvent<HTMLInputElement>) {
         this.setState({
             uriRegex: e.currentTarget.value
+        })
+        
+        this.attributeVerifyAlertRef?.onAttributeChanged()
+    }
+
+    onVerify() {
+        let htmlData = this.props.getHtmlData()
+
+        this.attributeVerifyAlertRef?.onVerifyExternalAttributeRequest({
+            name: this.state.name,
+            queryStr: this.state.regex,
+            uriRegex: this.state.uriRegex,
+
+            html: htmlData.html,
+            hostUri: htmlData.uri
         })
     }
 
@@ -182,7 +201,10 @@ class LinkAttributeInputForm extends React.Component<LinkAttributeFromProps, Lin
                     </div>
                 </Stack>
                 <br />
-                <Button onClick={this.props.onVerify}>Verify</Button>
+                <AttributeVerifyAlert ref={refs => this.attributeVerifyAlertRef = refs}>
+                    
+                </AttributeVerifyAlert>
+                <Button onClick={this.onVerify}>Verify</Button>
             </div>
         )
     }
@@ -190,7 +212,9 @@ class LinkAttributeInputForm extends React.Component<LinkAttributeFromProps, Lin
 
 
 class ExternalAttributeInputForm extends React.Component<ExternalAttributeFromProps, ExternalAttributeFormState> implements AttributeJsonConvertable {
-    constructor(props: ExternalAttributeFromProps) {
+    attributeVerifyAlertRef : AttributeVerifyAlert | null = null
+
+    constructor(props: LinkAttributeFromProps) {
         super(props)
 
         this.state = {
@@ -199,40 +223,49 @@ class ExternalAttributeInputForm extends React.Component<ExternalAttributeFromPr
             uriRegex: ""
         }
 
-        this.onSubmit = this.onSubmit.bind(this)
-
         this.onNameChange = this.onNameChange.bind(this)
         this.onRegexChange = this.onRegexChange.bind(this)
         this.onUriRegexChange = this.onUriRegexChange.bind(this)
+        this.onVerify = this.onVerify.bind(this)
 
-    }
-
-    onSubmit(e: SyntheticEvent<HTMLFormElement>) {
-        e.preventDefault()
-
-        alert('submitted' +
-            (this.state.name + this.state.regex + this.state.uriRegex))
     }
 
     onNameChange(e: SyntheticEvent<HTMLInputElement>) {
         this.setState({
             name: e.currentTarget.value
         })
+        
+        this.attributeVerifyAlertRef?.onAttributeChanged()
     }
 
     onRegexChange(e: SyntheticEvent<HTMLInputElement>) {
         this.setState({
             regex: e.currentTarget.value
         })
+
+        this.attributeVerifyAlertRef?.onAttributeChanged()
     }
 
     onUriRegexChange(e: SyntheticEvent<HTMLInputElement>) {
         this.setState({
             uriRegex: e.currentTarget.value
         })
+        
+        this.attributeVerifyAlertRef?.onAttributeChanged()
     }
 
+    onVerify() {
+        let htmlData = this.props.getHtmlData()
 
+        this.attributeVerifyAlertRef?.onVerifyExternalAttributeRequest({
+            name: this.state.name,
+            queryStr: this.state.regex,
+            uriRegex: this.state.uriRegex,
+
+            html: htmlData.html,
+            hostUri: htmlData.uri
+        })
+    }
 
     render() {
         return (
@@ -255,16 +288,21 @@ class ExternalAttributeInputForm extends React.Component<ExternalAttributeFromPr
                     </div>
                 </Stack>
                 <br />
-                <Button onClick={this.props.onVerify}>Verify</Button>
+                <AttributeVerifyAlert ref={refs => this.attributeVerifyAlertRef = refs}>
+                    
+                </AttributeVerifyAlert>
+                <Button onClick={this.onVerify}>Verify</Button>
             </div>
         )
     }
 }
 
 class InternalAttirbuteInputForm extends React.Component<InternalAttributeFromProps, InternalAttributeFormState> implements AttributeJsonConvertable {
-    readonly OUTER_HTML = "OuterHtml"
-    readonly INNER_HTML = "InnerHtml"
-    readonly TEXT_CONTENT = "TextContent"
+    readonly OUTER_HTML = "OUTER_HTML"
+    readonly INNER_HTML = "INNER_HTML"
+    readonly TEXT_CONTENT = "TEXT_CONTENT"
+
+    attributeVerifyAlertRef : AttributeVerifyAlert | null = null
 
     constructor(props: InternalAttributeFromProps) {
         super(props)
@@ -272,53 +310,67 @@ class InternalAttirbuteInputForm extends React.Component<InternalAttributeFromPr
         this.state = {
             name: "",
             regex: "",
-            parseMode: "TextContent"
+            parseMode: this.TEXT_CONTENT
         }
-
-
-        this.onSubmit = this.onSubmit.bind(this)
 
         this.onNameChange = this.onNameChange.bind(this)
         this.onRegexChange = this.onRegexChange.bind(this)
         this.onClickOuterHtml = this.onClickOuterHtml.bind(this)
         this.onClickInnerHtml = this.onClickInnerHtml.bind(this)
         this.onClickTextContent = this.onClickTextContent.bind(this)
-    }
 
-    onSubmit(e: SyntheticEvent<HTMLFormElement>) {
-        e.preventDefault()
-
-        alert('submitted' +
-            (this.state.name + this.state.regex + this.state.parseMode))
+        this.onVerify = this.onVerify.bind(this)
     }
 
     onNameChange(e: SyntheticEvent<HTMLInputElement>) {
         this.setState({
             name: e.currentTarget.value
         })
+        
+        this.attributeVerifyAlertRef?.onAttributeChanged()
     }
 
     onRegexChange(e: SyntheticEvent<HTMLInputElement>) {
         this.setState({
             regex: e.currentTarget.value
         })
+        
+        this.attributeVerifyAlertRef?.onAttributeChanged()
     }
 
     onClickOuterHtml(e: SyntheticEvent<HTMLButtonElement>) {
         this.setState({
             parseMode: this.OUTER_HTML
         })
+        
+        this.attributeVerifyAlertRef?.onAttributeChanged()
     }
 
     onClickInnerHtml(e: SyntheticEvent<HTMLButtonElement>) {
         this.setState({
             parseMode: this.INNER_HTML
         })
+        
+        this.attributeVerifyAlertRef?.onAttributeChanged()
     }
 
     onClickTextContent(e: SyntheticEvent<HTMLButtonElement>) {
         this.setState({
             parseMode: this.TEXT_CONTENT
+        })
+        
+        this.attributeVerifyAlertRef?.onAttributeChanged()
+    }
+
+    onVerify() {
+        let htmlData = this.props.getHtmlData()
+
+        this.attributeVerifyAlertRef?.onVerifyInternalAttributeRequest({
+            name: this.state.name,
+            queryStr: this.state.regex,
+            parseMode: this.state.parseMode,
+
+            html: htmlData.html
         })
     }
 
@@ -341,22 +393,25 @@ class InternalAttirbuteInputForm extends React.Component<InternalAttributeFromPr
                         <br />
                         <p>Parse Mode:</p>
                         <ButtonGroup>
-                            <ToggleButton value="OuterHtml" type="radio" onClick={this.onClickOuterHtml} active={this.state.parseMode === "OuterHtml"}>
+                            <ToggleButton value="OuterHtml" type="radio" onClick={this.onClickOuterHtml} active={this.state.parseMode === this.OUTER_HTML}>
                                 OuterHtml
                             </ToggleButton>
 
-                            <ToggleButton value="InnerHtml" type="radio" onClick={this.onClickInnerHtml} active={this.state.parseMode === "InnerHtml"}>
+                            <ToggleButton value="InnerHtml" type="radio" onClick={this.onClickInnerHtml} active={this.state.parseMode === this.INNER_HTML}>
                                 InnerHtml
                             </ToggleButton>
 
-                            <ToggleButton value="TextContent" type="radio" onClick={this.onClickTextContent} active={this.state.parseMode === "TextContent"}>
+                            <ToggleButton value="TextContent" type="radio" onClick={this.onClickTextContent} active={this.state.parseMode === this.TEXT_CONTENT}>
                                 TextContent
                             </ToggleButton>
                         </ButtonGroup>
                     </div>
                 </Stack>
                 <br />
-                <Button onClick={this.props.onVerify}>Verify</Button>
+                <AttributeVerifyAlert ref={refs => this.attributeVerifyAlertRef = refs}>
+                    
+                </AttributeVerifyAlert>
+                <Button onClick={this.onVerify}>Verify</Button>
             </div>
         )
     }
@@ -367,7 +422,7 @@ class AttributeInputForm extends React.Component<AttributeInputFormProps, Attrib
     readonly EXTERNAL_ATTRIBUTE = "External"
     readonly LINK_ATTRIBUTE = "Link"
 
-    attributeReference: AttributeJsonConvertable | null = null
+    attributeReference: InternalAttirbuteInputForm | ExternalAttributeInputForm | LinkAttributeInputForm | null = null
 
     constructor(props: AttributeInputFormProps) {
         super(props)
@@ -384,11 +439,11 @@ class AttributeInputForm extends React.Component<AttributeInputFormProps, Attrib
 
     selectAttribute(e: string) {
         if (e === this.INTERNAL_ATTRIBUTE) {
-            return <InternalAttirbuteInputForm onVerify={this.props.onVerify} ref={refs => this.attributeReference = refs}></InternalAttirbuteInputForm>
+            return <InternalAttirbuteInputForm getHtmlData={this.props.getHtmlData} ref={refs => this.attributeReference = refs}></InternalAttirbuteInputForm>
         } else if (e === this.EXTERNAL_ATTRIBUTE) {
-            return <ExternalAttributeInputForm onVerify={this.props.onVerify} ref={refs => this.attributeReference = refs}></ExternalAttributeInputForm>
+            return <ExternalAttributeInputForm getHtmlData={this.props.getHtmlData} ref={refs => this.attributeReference = refs}></ExternalAttributeInputForm>
         } else if (e === this.LINK_ATTRIBUTE) {
-            return <LinkAttributeInputForm onVerify={this.props.onVerify} ref={refs => this.attributeReference = refs}></LinkAttributeInputForm>
+            return <LinkAttributeInputForm getHtmlData={this.props.getHtmlData} ref={refs => this.attributeReference = refs}></LinkAttributeInputForm>
         } else {
             return <p>ERROR</p>
         }
