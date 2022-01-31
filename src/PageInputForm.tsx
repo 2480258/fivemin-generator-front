@@ -3,10 +3,12 @@ import { Button, ButtonGroup, Dropdown, Stack, ToggleButton } from "react-bootst
 import AttributeInputForm, { HtmlData } from "./AttributeInputForm";
 import AttributeListForm from "./AttributeListForm";
 import PageTagListForm from "./PageTagListForm";
+import UriVerifyAlert from "./UriVerifyAlert";
 
 type PageInputFormProps = {
     nameChangedCallback: (e: string) => void
     getHtmlData: () => HtmlData
+    getGlobalCondition: () => string
     idx: number
 }
 
@@ -21,6 +23,8 @@ export type PageInputFormState = {
 class PageInputForm extends React.Component<PageInputFormProps, PageInputFormState> {
     attributeReference: AttributeListForm | null = null
     tagReference: PageTagListForm | null = null
+    uriVerifyRef: UriVerifyAlert | null = null
+
 
     constructor(props: PageInputFormProps) {
         super(props)
@@ -32,6 +36,7 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
         this.onWorkingSetEnabledClicked = this.onWorkingSetEnabledClicked.bind(this)
         this.onWorkingSetDisabledClicked = this.onWorkingSetDisabledClicked.bind(this)
         this.onTargetRequesterChanged = this.onTargetRequesterChanged.bind(this)
+        this.onUriVerify = this.onUriVerify.bind(this)
     }
 
     onNameChanged(e: SyntheticEvent<HTMLInputElement>) {
@@ -41,6 +46,8 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
 
     onUriConditionChanged(e: SyntheticEvent<HTMLInputElement>) {
         this.setState({ uriCondition: e.currentTarget.value })
+
+        this.onUriVerify(e.currentTarget.value, null, null)
     }
 
     onWorkingSetEnabledClicked(e: SyntheticEvent<HTMLElement>) {
@@ -55,8 +62,8 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
         this.setState({ targetRequester: e.currentTarget.value })
     }
 
-    onUriVerify() {
-
+    onUriVerify(curMatch: string | null, uri: string | null, globalCond: string | null) {
+        this.uriVerifyRef?.onVerify(uri ?? this.props.getHtmlData().uri, curMatch ?? this.state.uriCondition, globalCond ?? this.props.getGlobalCondition())
     }
 
     render() {
@@ -107,12 +114,18 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
                             {this.state.workingSet ? " ✔ Working Set Enabled" : "  Working Set Disabled"}
                         </div>
                     </div>
+
+                    <div>
+                        <UriVerifyAlert ref={refs => this.uriVerifyRef = refs}>
+
+                        </UriVerifyAlert>
+                    </div>
                 </Stack>
                 <br />
                 <AttributeListForm ref={r => this.attributeReference = r} getHtmlData={this.props.getHtmlData}>
 
                 </AttributeListForm>
-                <PageTagListForm getHtmlData={this.props.getHtmlData} ref={refs => this.tagReference = refs}>
+                <PageTagListForm getHtmlData={this.props.getHtmlData} ref={refs => this.tagReference = refs} pageIdx = {this.props.idx}>
 
                 </PageTagListForm>
             </div>

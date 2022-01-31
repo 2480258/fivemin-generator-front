@@ -4,7 +4,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 type HtmlBoxProps = {
-
+    onUriChanged: (uri: string) => void
 }
 
 type HtmlBoxState = {
@@ -29,6 +29,8 @@ class HtmlBox extends React.Component<HtmlBoxProps, HtmlBoxState> {
 
     onUriChanged(e: SyntheticEvent<HTMLInputElement>) {
         this.setState({ uri: e.currentTarget.value })
+        
+        this.props.onUriChanged(e.currentTarget.value)
     }
 
     render() {

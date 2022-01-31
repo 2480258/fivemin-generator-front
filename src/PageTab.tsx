@@ -19,14 +19,14 @@ type PageTabState = {
 
 type TabWithAttribute = {
     name: string
-    element: JSX.Element
-    reference: PagePlane | null
 }
 
 class PageTab extends React.Component<PageTabProps, PageTabState> {
     requestRef: RequesterFormat | null = null
     exporterRef: ExportFormat | null = null
     parseFormatRef: ParsePageFormat | null = null
+
+    pageRef: Array<PagePlane | null> = []
 
     constructor(props: PageTabProps) {
         super(props)
@@ -40,9 +40,7 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
             pageList: prevState.pageList.map((d, i) => {
                 if (i === idx) {
                     return ({
-                        name: name,
-                        element: d.element,
-                        reference: d.reference
+                        name: name
                     })
                 }
 
@@ -54,12 +52,8 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
 
 
     onClick() {
-        let attributeRef: PagePlane | null
-        const elem = React.createElement(PagePlane, { ref: refs => attributeRef = refs, nameChangedCallback: this.onNameChanged.bind(this, this.state.pageList.length), idx: this.state.pageList.length }, {})
-
-
         this.setState((prevState => ({
-            pageList: prevState.pageList.concat({ element: elem, reference: attributeRef, name: this.state.pageList.length.toString() })
+            pageList: prevState.pageList.concat({ name: this.state.pageList.length.toString() })
         })))
     }
 
@@ -73,18 +67,18 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
                 userAgent: this.requestRef.state.userAgent
             },
             parseFormat: {
-                pages: this.state.pageList.map((d, idx) => {
-                    if (d.reference === null || d.reference?.inputFormRef === null || d.reference?.inputFormRef?.attributeReference === null || d.reference?.inputFormRef?.tagReference === null) {
+                pages: this.pageRef.map((d, idx) => {
+                    if (d === null || d.inputFormRef === null || d.inputFormRef.attributeReference === null || d.inputFormRef.tagReference === null) {
                         throw Error("null ref")
                     }
 
                     return {
-                        name: d.name,
-                        uriCondition: d.reference.inputFormRef.state.uriCondition,
-                        workingSet: d.reference.inputFormRef.state.workingSet,
+                        name: d.inputFormRef.state.name,
+                        uriCondition: d.inputFormRef.state.uriCondition,
+                        workingSet: d.inputFormRef.state.workingSet,
                         targetRequester: 'Default',
 
-                        attributes: d.reference.inputFormRef.attributeReference.attributeRefList.map((d, idx) => {
+                        attributes: d.inputFormRef.attributeReference.attributeRefList.map((d, idx) => {
                             if (d === null || d.attributeReference === null) {
                                 throw Error("null ref")
                             }
@@ -98,7 +92,7 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
                             }
                         }),
 
-                        tag: d.reference.inputFormRef.tagReference.tagRefList.map((d, idx) => {
+                        tag: d.inputFormRef.tagReference.tagRefList.map((d, idx) => {
                             if (d === null) {
                                 throw Error("null ref")
                             }
@@ -156,12 +150,16 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
                         return (
                             <Tab eventKey={idx} title={"Page: " + d.name}>
                                 <div className="page-tab-content" key={"page1" + idx}>
-                                    {d.element}
+                                    <PagePlane ref={refs => this.pageRef.push(refs) } nameChangedCallback={this.onNameChanged.bind(this, idx)} idx={idx} globalCondition={() => this.parseFormatRef?.state.globalConditionRegex ?? ""}>
+
+                                    </PagePlane>
                                 </div>
                             </Tab>)
                     })}
                     <Tab eventKey="add" title="Parse Setting">
-                        <ParsePageFormat ref={refs => this.parseFormatRef = refs}>
+                        <ParsePageFormat ref={refs => this.parseFormatRef = refs} onGlobalChanged={(val) => this.pageRef.forEach((value) => {
+                            value?.inputFormRef?.onUriVerify(null, null, val)
+                        })}>
 
                         </ParsePageFormat>
                         <div className="page-tab-content">

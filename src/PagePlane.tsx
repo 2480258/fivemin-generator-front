@@ -7,6 +7,7 @@ import { Button, Modal } from "react-bootstrap";
 type PagePlaneProps = {
     nameChangedCallback: (e: string) => void
     idx: number
+    globalCondition: () => string
 }
 
 type PagePlaneState = {
@@ -15,6 +16,7 @@ type PagePlaneState = {
 class PagePlane extends React.Component<PagePlaneProps, PagePlaneState> {
     inputFormRef: PageInputForm | null
     html: HtmlBox | null
+    
 
     constructor(props: PagePlaneProps) {
         super(props)
@@ -37,10 +39,10 @@ class PagePlane extends React.Component<PagePlaneProps, PagePlaneState> {
         return (
             <div className="page-plane">
 
-                <HtmlBox ref={refs => this.html = refs}>
+                <HtmlBox ref={refs => this.html = refs} onUriChanged={val => this.inputFormRef?.onUriVerify(null, val, null)}>
 
                 </HtmlBox>
-                <PageInputForm ref={el => this.inputFormRef = el} nameChangedCallback={this.props.nameChangedCallback} getHtmlData={this.getHtmlData} idx={this.props.idx}></PageInputForm>
+                <PageInputForm ref={el => this.inputFormRef = el} nameChangedCallback={this.props.nameChangedCallback} getHtmlData={this.getHtmlData} idx={this.props.idx} getGlobalCondition={this.props.globalCondition}></PageInputForm>
             </div>
         )
     }
