@@ -88,15 +88,6 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
                             onChange={this.onUriConditionChanged}
                         />
                     </div>
-
-                    <div>
-                        <p>TargetRequester:</p>
-                        <input
-                            type="text"
-                            value={this.state.targetRequester}
-                            onChange={this.onTargetRequesterChanged}
-                        />
-                    </div>
                     <div>
                         <div className="working-set-select">
                             <ButtonGroup className="mb-2">

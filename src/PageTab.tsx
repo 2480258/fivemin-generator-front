@@ -175,7 +175,7 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
                             </ExportFormat>
                         </div>
                     </Tab>
-                    <Tab eventKey="jsonSave" title="Save to JSON">
+                    <Tab eventKey="jsonSave" title="Save Configuration">
 
                         <div className="page-tab-content">
                             <JsonExporter getJsonData={() => this.getJsonData()}>

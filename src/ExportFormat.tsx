@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from "react";
-import { Accordion, Button, Stack } from "react-bootstrap";
+import { Accordion, Button, ButtonGroup, Stack, ToggleButton } from "react-bootstrap";
 
 
 type ExportPageAttributeFormatProps = {
@@ -100,16 +100,21 @@ class ExportPageAttributeFormat extends React.Component<ExportPageAttributeForma
 class ExportPageFormat extends React.Component<ExportPageFormatProps, ExportPageFormatState> {
     targetAttributeNameRef: Array<ExportPageAttributeFormat | null> = []
     
+    readonly JSON_ADAPTER = "Json"
+    readonly BINARY_ADAPTER = "Binary"
+
     constructor(props: ExportPageFormatProps) {
         super(props)
 
         this.state = { pageName: '', targetAttributeNameCount: 0, mode: '', fileNameExp: '' }
 
         this.onNameChanged = this.onNameChanged.bind(this)
-        this.onModeChanged = this.onModeChanged.bind(this)
         this.onExpChanged = this.onExpChanged.bind(this)
 
         this.onButtonClick = this.onButtonClick.bind(this)
+
+        this.onClickJsonMode = this.onClickJsonMode.bind(this)
+        this.onClickBinaryMode = this.onClickBinaryMode.bind(this)
     }
 
     onNameChanged(e: SyntheticEvent<HTMLInputElement>) {
@@ -118,9 +123,15 @@ class ExportPageFormat extends React.Component<ExportPageFormatProps, ExportPage
         })
     }
 
-    onModeChanged(e: SyntheticEvent<HTMLInputElement>) {
+    onClickJsonMode() {
         this.setState({
-            mode: e.currentTarget.value
+            mode: this.JSON_ADAPTER
+        })
+    }
+
+    onClickBinaryMode() {
+        this.setState({
+            mode: this.BINARY_ADAPTER
         })
     }
 
@@ -158,7 +169,15 @@ class ExportPageFormat extends React.Component<ExportPageFormatProps, ExportPage
                     </div>
                     <div>
                         <p>Adapter:</p>
-                        <input type="text" value={this.state.mode} onChange={this.onModeChanged} />
+                        <ButtonGroup>
+                            <ToggleButton value="Json" type="radio" onClick={this.onClickJsonMode} active={this.state.mode === this.JSON_ADAPTER}>
+                                Json
+                            </ToggleButton>
+
+                            <ToggleButton value="Binary" type="radio" onClick={this.onClickBinaryMode} active={this.state.mode === this.BINARY_ADAPTER}>
+                                Binary
+                            </ToggleButton>
+                        </ButtonGroup>
                     </div>
                     <div>
                         <p>File Name Expression:</p>
