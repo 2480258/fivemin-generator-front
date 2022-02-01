@@ -1,5 +1,6 @@
 import { auto } from "@popperjs/core";
 import React, { SyntheticEvent } from "react";
+import { OverlayTrigger, Popover } from "react-bootstrap";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
@@ -29,28 +30,56 @@ class HtmlBox extends React.Component<HtmlBoxProps, HtmlBoxState> {
 
     onUriChanged(e: SyntheticEvent<HTMLInputElement>) {
         this.setState({ uri: e.currentTarget.value })
-        
+
         this.props.onUriChanged(e.currentTarget.value)
     }
+
+    readonly URLBoxPopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Editing attribute</Popover.Header>
+            <Popover.Body>
+                <p>Paste your sample target URL. This will be used verification of parsing result.</p>
+            </Popover.Body>
+        </Popover>
+    );
+
+
+    readonly HtmlBoxPopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Editing attribute</Popover.Header>
+            <Popover.Body>
+                <p>Paste your sample target HTML. This will be used verification of parsing result.</p>
+            </Popover.Body>
+        </Popover>
+    );
 
     render() {
         return (
             <div className="html-box">
-                <p>URI for this page: </p>
-                <input
-                    type="text"
-                    value={this.state.uri}
-                    onChange={this.onUriChanged}
-                    className="html-uri"
-                />
+                <OverlayTrigger trigger={["hover", "focus"]} placement="left" overlay={this.URLBoxPopover}>
+                    <div>
+                        <p>Samle URL for this page: </p>
+                        <input
+                            type="text"
+                            value={this.state.uri}
+                            onChange={this.onUriChanged}
+                            className="html-uri"
+                        />
+                    </div>
+                </OverlayTrigger>
                 <br />
                 <br />
-                <p>HTML content for this page: </p>
-                <textarea
-                    className="html-box-text-area"
-                    value={this.state.html}
-                    onChange={this.onTextBoxChanged}
-                />
+
+                <OverlayTrigger trigger={["hover", "focus"]} placement="left" overlay={this.HtmlBoxPopover}>
+                    <div>
+                        <p>Samle HTML content for this page: </p>
+                        <textarea
+                            className="html-box-text-area"
+                            value={this.state.html}
+                            onChange={this.onTextBoxChanged}
+                        />
+                    </div>
+                </OverlayTrigger>
 
                 <SyntaxHighlighter language="javascript" style={docco} className="html-highlighter">
                     {this.state.html}

@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from "react";
-import { Accordion, Button, ButtonGroup, Stack, ToggleButton } from "react-bootstrap";
+import { Accordion, Button, ButtonGroup, OverlayTrigger, Popover, Stack, ToggleButton } from "react-bootstrap";
 
 
 type ExportPageAttributeFormatProps = {
@@ -52,6 +52,11 @@ class ExportFormat extends React.Component<ExportFormatProps, ExportFormatState>
     render() {
         return (
             <div>
+                <h1>Export Format Configurator</h1>
+                <br />
+                <p>Here section is for describing file-saving(serializing) related actions.</p>
+                <p>Start by press 'Add Export Page' button. <br /> Hover or focus input box for more information.</p>
+                <hr />
                 <Accordion defaultActiveKey={['0']} alwaysOpen>
                     {this.state.exportPages.map((d, idx) => {
                         return (
@@ -99,7 +104,7 @@ class ExportPageAttributeFormat extends React.Component<ExportPageAttributeForma
 
 class ExportPageFormat extends React.Component<ExportPageFormatProps, ExportPageFormatState> {
     targetAttributeNameRef: Array<ExportPageAttributeFormat | null> = []
-    
+
     readonly JSON_ADAPTER = "Json"
     readonly BINARY_ADAPTER = "Binary"
 
@@ -147,41 +152,131 @@ class ExportPageFormat extends React.Component<ExportPageFormatProps, ExportPage
         }))
     }
 
+    readonly pageNamePopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Editing Export</Popover.Header>
+            <Popover.Body>
+                Name of page (parser tab) to be applied.
+            </Popover.Body>
+        </Popover>
+    )
+
+
+    readonly targetAttributePopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Editing Export</Popover.Header>
+            <Popover.Body>
+                Specifies name of attributes (in provided page) that needed to be exported.
+            </Popover.Body>
+        </Popover>
+    )
+
+
+    readonly jsonadapterPopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Editing Export</Popover.Header>
+            <Popover.Body>
+                Marks this attribute should be exported via Json file. (for text based attributes)
+            </Popover.Body>
+        </Popover>
+    )
+
+
+    readonly binaryadapterPopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Editing Export</Popover.Header>
+            <Popover.Body>
+                Marks this attribute should be exported via seperated binary file. (for binary based attributes)
+            </Popover.Body>
+        </Popover>
+    )
+
+    readonly fileNameExpPopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Editing Export</Popover.Header>
+            <Popover.Body>
+                Specifies where to export files. We can use value of tag by writing &(tagName). Some tags are added automatically for sake of usability. <br /> See below.
+
+                <hr />
+                <strong>Tag reference table</strong>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Functions</th>
+                    </tr>
+                    <tr>
+                        <td>inc</td>
+                        <td>incremental numbers by attributes.</td>
+                    </tr>
+                    <tr>
+                        <td>ext</td>
+                        <td>extension of requested URL. if none, ".bin" will be used instead.</td>
+                    </tr>
+                    <tr>
+                        <td>lastseg</td>
+                        <td>last segment of requested URL.</td>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>name of current attribute.</td>
+                    </tr>
+                </table>
+
+                <hr />
+                <strong>Exceptions</strong>
+                <p>- If file name is duplicated, "- (Dup) will be appended after file name. <br /> but, this behavior doesn't apply for files before this crawler starts"</p>
+                <p>- Note that directory separators actually work as the directory separators. <br /> If exists, a new directory name followed by directory separator will be created.</p>
+            </Popover.Body>
+        </Popover>
+    )
+
+
     render() {
         return (
             <div>
                 <Stack gap={5}>
                     <div>
                         <p>PageName:</p>
-                        <input type="text" value={this.state.pageName} onChange={this.onNameChanged} />
+                        <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={this.pageNamePopover}>
+                            <input type="text" value={this.state.pageName} onChange={this.onNameChanged} />
+                        </OverlayTrigger>
                     </div>
                     <div>
                         <p>TargettedAttributes:</p>
                         {Array.from(Array(this.state.targetAttributeNameCount).keys()).map((_, idx) => {
                             return (
-                                <ExportPageAttributeFormat ref = {refs => this.targetAttributeNameRef.push(refs)}>
+                                <ExportPageAttributeFormat ref={refs => this.targetAttributeNameRef.push(refs)}>
 
                                 </ExportPageAttributeFormat>
                             )
                         })}
                         <br />
-                        <Button onClick={this.onButtonClick}>Add Targetted Attributes</Button>
+                        <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={this.targetAttributePopover}>
+                            <Button onClick={this.onButtonClick}>Add Targetted Attributes</Button>
+                        </OverlayTrigger>
                     </div>
                     <div>
                         <p>Adapter:</p>
                         <ButtonGroup>
-                            <ToggleButton value="Json" type="radio" onClick={this.onClickJsonMode} active={this.state.mode === this.JSON_ADAPTER}>
-                                Json
-                            </ToggleButton>
 
-                            <ToggleButton value="Binary" type="radio" onClick={this.onClickBinaryMode} active={this.state.mode === this.BINARY_ADAPTER}>
-                                Binary
-                            </ToggleButton>
+                            <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={this.jsonadapterPopover}>
+                                <ToggleButton value="Json" type="radio" onClick={this.onClickJsonMode} active={this.state.mode === this.JSON_ADAPTER}>
+                                    Json
+                                </ToggleButton>
+                            </OverlayTrigger>
+
+                            <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={this.binaryadapterPopover}>
+                                <ToggleButton value="Binary" type="radio" onClick={this.onClickBinaryMode} active={this.state.mode === this.BINARY_ADAPTER}>
+                                    Binary
+                                </ToggleButton>
+                            </OverlayTrigger>
                         </ButtonGroup>
                     </div>
                     <div>
                         <p>File Name Expression:</p>
-                        <input type="text" value={this.state.fileNameExp} onChange={this.onExpChanged} />
+                        <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={this.fileNameExpPopover}>
+                            <input type="text" value={this.state.fileNameExp} onChange={this.onExpChanged} />
+                        </OverlayTrigger>
                     </div>
                 </Stack>
             </div>

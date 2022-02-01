@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from "react";
-import { Button, ButtonGroup, Dropdown, Stack, ToggleButton } from "react-bootstrap";
+import { Button, ButtonGroup, Dropdown, OverlayTrigger, Popover, Stack, ToggleButton } from "react-bootstrap";
 import AttributeInputForm, { HtmlData } from "./AttributeInputForm";
 import AttributeListForm from "./AttributeListForm";
 import PageTagListForm from "./PageTagListForm";
@@ -66,42 +66,87 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
         this.uriVerifyRef?.onVerify(uri ?? this.props.getHtmlData().uri, curMatch ?? this.state.uriCondition, globalCond ?? this.props.getGlobalCondition())
     }
 
+
+
+    readonly namePopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Editing Page</Popover.Header>
+            <Popover.Body>
+                Literally, name of <strong>page</strong>. Should be unique!
+            </Popover.Body>
+        </Popover>
+    )
+
+
+    readonly conditionPopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Editing Page</Popover.Header>
+            <Popover.Body>
+                Specify whether this <strong>document</strong> is converted to be this page. <br />
+                If regex of this box matches with right box URL, response will be parsed with below rules. <br />
+                <hr />
+                You can check regex acceptablity below note.
+            </Popover.Body>
+        </Popover>
+    )
+
+
+    readonly workingSetPopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Editing Page</Popover.Header>
+            <Popover.Body>
+                - If the page is marked as working set enabled, it means that the page and its children page are <i>atomic</i>, they<br />
+                will not change over time and no need to be downloaded again.<br />
+                - If the page is marked as working set disabled, it will be downloaded again.<br />
+                If you are not going to use resume feature, just let them Enabled.
+            </Popover.Body>
+        </Popover>
+    )
+
+
     render() {
         return (
             <div>
                 <h1>Setup for page: {this.state.name}</h1>
-                <p>Please see documentation for further infomation</p>
                 <Stack gap={5}>
                     <div>
                         <p>Name:</p>
-                        <input
-                            type="text"
-                            value={this.state.name}
-                            onChange={this.onNameChanged}
-                        />
+                        <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={this.namePopover}>
+                            <input
+                                type="text"
+                                value={this.state.name}
+                                onChange={this.onNameChanged}
+                            />
+                        </OverlayTrigger>
                     </div>
                     <div>
-                        <p>UriCondition:</p>
-                        <input
-                            type="text"
-                            value={this.state.uriCondition}
-                            onChange={this.onUriConditionChanged}
-                        />
+                        <p>UriCondition (Regex):</p>
+
+                        <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={this.conditionPopover}>
+                            <input
+                                type="text"
+                                value={this.state.uriCondition}
+                                onChange={this.onUriConditionChanged}
+                            />
+                        </OverlayTrigger>
                     </div>
                     <div>
                         <div className="working-set-select">
-                            <ButtonGroup className="mb-2">
-                                <ToggleButton
-                                    id={"toggle-check" + this.props.idx}
-                                    type="checkbox"
-                                    variant="outline-primary"
-                                    checked={this.state.workingSet}
-                                    value="1"
-                                    onChange={(e) => { if (!this.state.workingSet) { this.onWorkingSetEnabledClicked(e) } else { this.onWorkingSetDisabledClicked(e) } }}
-                                >
-                                    Working Set
-                                </ToggleButton>
-                            </ButtonGroup>
+
+                            <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={this.workingSetPopover}>
+                                <ButtonGroup className="mb-2">
+                                    <ToggleButton
+                                        id={"toggle-check" + this.props.idx}
+                                        type="checkbox"
+                                        variant="outline-primary"
+                                        checked={this.state.workingSet}
+                                        value="1"
+                                        onChange={(e) => { if (!this.state.workingSet) { this.onWorkingSetEnabledClicked(e) } else { this.onWorkingSetDisabledClicked(e) } }}
+                                    >
+                                        Working Set
+                                    </ToggleButton>
+                                </ButtonGroup>
+                            </OverlayTrigger>
                             {this.state.workingSet ? " ✔ Working Set Enabled" : "  Working Set Disabled"}
                         </div>
                     </div>
@@ -116,7 +161,7 @@ class PageInputForm extends React.Component<PageInputFormProps, PageInputFormSta
                 <AttributeListForm ref={r => this.attributeReference = r} getHtmlData={this.props.getHtmlData}>
 
                 </AttributeListForm>
-                <PageTagListForm getHtmlData={this.props.getHtmlData} ref={refs => this.tagReference = refs} pageIdx = {this.props.idx}>
+                <PageTagListForm getHtmlData={this.props.getHtmlData} ref={refs => this.tagReference = refs} pageIdx={this.props.idx}>
 
                 </PageTagListForm>
             </div>

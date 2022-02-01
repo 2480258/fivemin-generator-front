@@ -47,6 +47,7 @@ class AttributeListForm extends React.Component<AttributeListFormProps, Attribut
     };
 
 
+
     render() {
         return (
             <div className="attribute-panel">

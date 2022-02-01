@@ -3,6 +3,7 @@ import React, { SyntheticEvent } from "react";
 import { Tabs, Tab, Button } from "react-bootstrap";
 import { ExternalAttributeFormState, InternalAttributeFormState } from "./AttributeInputForm";
 import ExportFormat from "./ExportFormat";
+import IntroductionForm from "./IntroductionForm";
 import JsonExporter, { JsonRequestData } from "./JsonExporter";
 import PageInputForm from "./PageInputForm";
 import PagePlane from "./PagePlane";
@@ -136,8 +137,16 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
     render() {
         return (
             <div>
-                <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
-                    <Tab eventKey="requester" title="Web Request Setting">
+                <Tabs defaultActiveKey="introduction" id="uncontrolled-tab-example" className="mb-3">
+                    <Tab eventKey="introduction" title="(1) Introduction">
+                        <div className="page-tab-content">
+                            <IntroductionForm>
+
+                            </IntroductionForm>
+                        </div>
+                    </Tab>
+
+                    <Tab eventKey="requester" title="(2) Web Request Setting">
                         <div className="page-tab-content">
                             <RequesterFormat ref={(refs) => this.requestRef = refs}>
 
@@ -146,28 +155,38 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
                     </Tab>
 
 
+                    <Tab eventKey="add" title="(3) Parse Setting">
+                        <div className="page-tab-content">
+
+                            <h1>Parse Format Configurator</h1>
+                            <br />
+                            <p>Here section is for describing parsing related actions.</p>
+                            <p>Start by filling below form and pressing 'Add Page' button. <br /> Hover or focus input box for more information.</p>
+                            <hr />
+
+                            <ParsePageFormat ref={refs => this.parseFormatRef = refs} onGlobalChanged={(val) => this.pageRef.forEach((value) => {
+                                value?.inputFormRef?.onUriVerify(null, null, val)
+                            })}>
+
+                            </ParsePageFormat>
+                            <br />
+                            <Button onClick={this.onClick}>Add Page</Button>
+
+                        </div>
+                    </Tab>
+
                     {this.state.pageList.map((d, idx) => {
                         return (
                             <Tab eventKey={idx} title={"Page: " + d.name}>
                                 <div className="page-tab-content" key={"page1" + idx}>
-                                    <PagePlane ref={refs => this.pageRef.push(refs) } nameChangedCallback={this.onNameChanged.bind(this, idx)} idx={idx} globalCondition={() => this.parseFormatRef?.state.globalConditionRegex ?? ""}>
+                                    <PagePlane ref={refs => this.pageRef.push(refs)} nameChangedCallback={this.onNameChanged.bind(this, idx)} idx={idx} globalCondition={() => this.parseFormatRef?.state.globalConditionRegex ?? ""}>
 
                                     </PagePlane>
                                 </div>
                             </Tab>)
                     })}
-                    <Tab eventKey="add" title="Parse Setting">
-                        <ParsePageFormat ref={refs => this.parseFormatRef = refs} onGlobalChanged={(val) => this.pageRef.forEach((value) => {
-                            value?.inputFormRef?.onUriVerify(null, null, val)
-                        })}>
 
-                        </ParsePageFormat>
-                        <div className="page-tab-content">
-                            <Button onClick={this.onClick}>Add Page</Button>
-                        </div>
-                    </Tab>
-
-                    <Tab eventKey="exporter" title="Export Setting">
+                    <Tab eventKey="exporter" title="(4) Export Setting">
 
                         <div className="page-tab-content">
                             <ExportFormat ref={(refs) => this.exporterRef = refs}>
@@ -175,7 +194,7 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
                             </ExportFormat>
                         </div>
                     </Tab>
-                    <Tab eventKey="jsonSave" title="Save Configuration">
+                    <Tab eventKey="jsonSave" title="(5) Save Configuration">
 
                         <div className="page-tab-content">
                             <JsonExporter getJsonData={() => this.getJsonData()}>

@@ -44,6 +44,7 @@ textarea {
   resize: none;
 } 
 
-.modal-dialog{
-  z-index: 100000 !important;
+.popover{
+  z-index: 2060 !important;
 }
+
