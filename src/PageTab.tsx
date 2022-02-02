@@ -68,7 +68,7 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
                 userAgent: this.requestRef.state.userAgent
             },
             parseFormat: {
-                pages: this.pageRef.map((d, idx) => {
+                pages: this.pageRef.filter((d) => d !== null).map((d, idx) => {
                     if (d === null || d.inputFormRef === null || d.inputFormRef.attributeReference === null || d.inputFormRef.tagReference === null) {
                         throw Error("null ref")
                     }
@@ -79,7 +79,7 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
                         workingSet: d.inputFormRef.state.workingSet,
                         targetRequester: 'Default',
 
-                        attributes: d.inputFormRef.attributeReference.attributeRefList.map((d, idx) => {
+                        attributes: d.inputFormRef.attributeReference.attributeRefList.filter((d) => d !== null).map((d, idx) => {
                             if (d === null || d.attributeReference === null) {
                                 throw Error("null ref")
                             }
@@ -93,7 +93,7 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
                             }
                         }),
 
-                        tag: d.inputFormRef.tagReference.tagRefList.map((d, idx) => {
+                        tag: d.inputFormRef.tagReference.tagRefList.filter((d) => d !== null).map((d, idx) => {
                             if (d === null) {
                                 throw Error("null ref")
                             }
@@ -112,14 +112,14 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
             },
             exportFormat: {
                 bookName: this.parseFormatRef.state.bookName,
-                pages: this.exporterRef.exportPageRef.map((d, idx) => {
+                pages: this.exporterRef.exportPageRef.filter((d) => d !== null).map((d, idx) => {
                     if (d === null) {
                         throw Error("null ref")
                     }
 
                     return {
                         pageName: d.state.pageName,
-                        targetAttributeName: d.targetAttributeNameRef.map((d, idx) => {
+                        targetAttributeName: d.targetAttributeNameRef.filter((d) => d !== null).map((d, idx) => {
                             if (d === null) {
                                 throw Error("null ref")
                             }
@@ -135,6 +135,8 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
     }
 
     render() {
+        this.pageRef = []
+
         return (
             <div>
                 <Tabs defaultActiveKey="introduction" id="uncontrolled-tab-example" className="mb-3">

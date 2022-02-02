@@ -28,7 +28,6 @@ class AttributeListForm extends React.Component<AttributeListFormProps, Attribut
 
         this.onButtonPressed = this.onButtonPressed.bind(this)
         this.addAttribute = this.addAttribute.bind(this)
-        this.addRefList = this.addRefList.bind(this)
     }
 
 
@@ -42,13 +41,10 @@ class AttributeListForm extends React.Component<AttributeListFormProps, Attribut
         }))
     }
 
-    addRefList = (element: any) => {
-        this.attributeRefList.push(element)
-    };
-
-
 
     render() {
+        this.attributeRefList = []
+
         return (
             <div className="attribute-panel">
                 <Accordion defaultActiveKey={['0']} alwaysOpen>
@@ -60,7 +56,7 @@ class AttributeListForm extends React.Component<AttributeListFormProps, Attribut
                                 </Accordion.Header>
                                 <Accordion.Body>
                                     <div key={idx}>
-                                        <AttributeInputForm key={idx} id={idx} getHtmlData={this.props.getHtmlData} ref={this.addRefList}></AttributeInputForm>
+                                        <AttributeInputForm key={idx} id={idx} getHtmlData={this.props.getHtmlData} ref={refs => this.attributeRefList.push(refs)}></AttributeInputForm>
                                     </div>
                                 </Accordion.Body>
                             </Accordion.Item>

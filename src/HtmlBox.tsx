@@ -58,7 +58,7 @@ class HtmlBox extends React.Component<HtmlBoxProps, HtmlBoxState> {
             <div className="html-box">
                 <OverlayTrigger trigger={["hover", "focus"]} placement="left" overlay={this.URLBoxPopover}>
                     <div>
-                        <p>Samle URL for this page: </p>
+                        <p>Sample URL for this page: </p>
                         <input
                             type="text"
                             value={this.state.uri}
@@ -72,7 +72,7 @@ class HtmlBox extends React.Component<HtmlBoxProps, HtmlBoxState> {
 
                 <OverlayTrigger trigger={["hover", "focus"]} placement="left" overlay={this.HtmlBoxPopover}>
                     <div>
-                        <p>Samle HTML content for this page: </p>
+                        <p>Sample HTML content for this page: </p>
                         <textarea
                             className="html-box-text-area"
                             value={this.state.html}

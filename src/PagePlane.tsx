@@ -54,7 +54,7 @@ class PagePlane extends React.Component<PagePlaneProps, PagePlaneState> {
                 </p>
 
                 <h3>Attribute</h3>
-                <p>Attribute means what you want to save. (Parsed text contents, downloaded images, and other things)</p>
+                <p>Attribute means what you want to extract. (Parsed text contents, downloaded images, links, and other things)</p>
                 <hr />
                 <p>Start by press 'Add Export Page' button. <br /> Hover or focus input box for more information.</p>
                 <hr />

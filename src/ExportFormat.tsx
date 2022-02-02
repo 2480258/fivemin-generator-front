@@ -232,6 +232,8 @@ class ExportPageFormat extends React.Component<ExportPageFormatProps, ExportPage
 
 
     render() {
+        this.targetAttributeNameRef = []
+
         return (
             <div>
                 <Stack gap={5}>
