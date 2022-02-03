@@ -89,7 +89,9 @@ class PageTab extends React.Component<PageTabProps, PageTabState> {
                                 name: d.attributeReference.state.name,
                                 queryStr: d.attributeReference.state.regex,
                                 uriRegex: (d.attributeReference.state as any).uriRegex,
-                                parseMode: (d.attributeReference.state as any).parseMode
+                                parseMode: (d.attributeReference.state as any).parseMode,
+                                preDest: (d.attributeReference.state as any).preDest,
+                                preDestSwitch: (d.attributeReference.state as any).preDestSwitch
                             }
                         }),
 

@@ -17,6 +17,10 @@ class App extends React.Component {
   onSetSidebarOpen(open: any) {
     this.setState({ sidebarOpen: open });
   }
+  
+  componentDidMount() {
+    document.title = "Fivemin-Crawler-Generator"
+  }
 
   render() {
     return (

@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from "react";
-import { Button, ButtonGroup, Dropdown, OverlayTrigger, Popover, Stack, ToggleButton } from "react-bootstrap";
+import { Button, ButtonGroup, Dropdown, Form, OverlayTrigger, Popover, Stack, ToggleButton } from "react-bootstrap";
 import AttributeListForm from "./AttributeListForm";
 import AttributeVerifyAlert from "./AttributeVerifyAlert";
 import VerifyDataService from "./VerifyDataService";
@@ -57,6 +57,8 @@ type LinkAttributeFormState = {
     name: string
     regex: string
     uriRegex: string
+    preDest: string
+    preDestSwitch: boolean
 }
 
 interface AttributeJsonConvertable {
@@ -172,12 +174,16 @@ class LinkAttributeInputForm extends React.Component<LinkAttributeFromProps, Lin
         this.state = {
             name: "",
             regex: "",
-            uriRegex: ""
+            uriRegex: "",
+            preDest: "",
+            preDestSwitch: false
         }
 
         this.onNameChange = this.onNameChange.bind(this)
         this.onRegexChange = this.onRegexChange.bind(this)
         this.onUriRegexChange = this.onUriRegexChange.bind(this)
+        this.onPreDestChange = this.onPreDestChange.bind(this)
+        this.onPreDestSwitchChange = this.onPreDestSwitchChange.bind(this)
         this.onVerify = this.onVerify.bind(this)
 
     }
@@ -206,6 +212,12 @@ class LinkAttributeInputForm extends React.Component<LinkAttributeFromProps, Lin
         this.attributeVerifyAlertRef?.onAttributeChanged()
     }
 
+    onPreDestChange(e: SyntheticEvent<HTMLInputElement>) {
+        this.setState({
+            preDest: e.currentTarget.value
+        })
+    }
+
     onVerify() {
         let htmlData = this.props.getHtmlData()
 
@@ -216,6 +228,13 @@ class LinkAttributeInputForm extends React.Component<LinkAttributeFromProps, Lin
 
             html: htmlData.html,
             hostUri: htmlData.uri
+        })
+    }
+
+    onPreDestSwitchChange(e: SyntheticEvent<HTMLInputElement>) {
+        let checked = e.currentTarget.checked
+        this.setState({
+            preDestSwitch: checked
         })
     }
 
@@ -255,7 +274,7 @@ class LinkAttributeInputForm extends React.Component<LinkAttributeFromProps, Lin
 
     readonly verifyPopover = (
         <Popover id="popover-basic">
-            <Popover.Header as="h3">Verifying attribute</Popover.Header>
+            <Popover.Header as="h3">Editing attribute</Popover.Header>
             <Popover.Body>
                 You can verify parse result of this attribute by clicking this button.
                 Evaluation result by backend will be displayed.
@@ -264,6 +283,18 @@ class LinkAttributeInputForm extends React.Component<LinkAttributeFromProps, Lin
             </Popover.Body>
         </Popover>
     )
+
+    readonly preDestPopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Editing attribute</Popover.Header>
+            <Popover.Body>
+                <strong>Pre Dest Page</strong>
+                <br />
+                Pins Page parsing to specified name. It's useful when hard to get regex that matches with Page
+            </Popover.Body>
+        </Popover>
+    )
+
 
     render() {
         return (
@@ -289,10 +320,33 @@ class LinkAttributeInputForm extends React.Component<LinkAttributeFromProps, Lin
                         <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={this.uriRegexPopover}>
                             <input type="text" value={this.state.uriRegex} onChange={this.onUriRegexChange} />
                         </OverlayTrigger>
-                        <br />
-                        <br />
+
+                    </div>
+                    <div>
+                        <Form>
+                            <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                                label="Enable PreDest"
+                                onChange={this.onPreDestSwitchChange}
+                            />
+                        </Form>
+                        {this.state.preDestSwitch ? (
+                            <div>
+                                PreDest:<br />
+
+                                <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={this.preDestPopover}>
+                                    <input type="text" value={this.state.preDest} onChange={this.onPreDestChange} />
+                                </OverlayTrigger>
+                            </div>
+                        ) : (
+                            <div>
+                            </div>
+                        )}
                     </div>
                 </Stack >
+                <br />
+                <br />
                 <br />
                 <AttributeVerifyAlert ref={refs => this.attributeVerifyAlertRef = refs}>
 
@@ -663,7 +717,7 @@ class AttributeInputForm extends React.Component<AttributeInputFormProps, Attrib
     render() {
         return (
             <div>
-                <h4>Select Attribute Type</h4>
+                <p>AttributeType:</p>
                 <AttributeSelectButton onButtonChanged={this.onAttributeTypeChanged} id={this.props.id} ></AttributeSelectButton>
                 {this.selectAttribute(this.state.type)}
             </div>
