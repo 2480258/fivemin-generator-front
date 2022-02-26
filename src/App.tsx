@@ -4,6 +4,7 @@ import PagePlane from "./PagePlane";
 import PageTab from "./PageTab";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {Helmet} from "react-helmet";
 
 class App extends React.Component {
   constructor(props: any) {
@@ -24,9 +25,16 @@ class App extends React.Component {
 
   render() {
     return (
-      <PageTab>
+      <div>
+        <Helmet>
+          <meta charSet="utf-8" />
+          <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"></meta>
+        </Helmet>
 
-      </PageTab>
+        <PageTab>
+
+        </PageTab>
+      </div>
     );
   }
 }
