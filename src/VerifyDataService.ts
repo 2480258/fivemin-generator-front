@@ -1,8 +1,19 @@
 import axios from "axios"
 
+/*
 const http = axios.create({
 
     baseURL: "http://localhost:8080/api",
+    headers: {
+        "Content-type": "application/json"
+    },
+    method: "post"
+});
+*/
+
+const http = axios.create({
+
+    baseURL: "http://gen5m.herokuapp.com/api",
     headers: {
         "Content-type": "application/json"
     },
