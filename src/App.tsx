@@ -17,26 +17,16 @@ class App extends React.Component {
   onSetSidebarOpen(open: any) {
     this.setState({ sidebarOpen: open });
   }
-  
+
   componentDidMount() {
     document.title = "Fivemin-Crawler-Generator"
   }
 
   render() {
     return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<div></div>}>
+      <PageTab>
 
-          </Route>
-          <Route path="/tools" element={<PageTab>
-
-          </PageTab>}>
-
-          </Route>
-        </Routes>
-      </BrowserRouter>
-
+      </PageTab>
     );
   }
 }
