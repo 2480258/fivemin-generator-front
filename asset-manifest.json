@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/fivemin-generator-front/static/css/main.a306b681.css",
-    "main.js": "/fivemin-generator-front/static/js/main.e6fada02.js",
+    "main.js": "/fivemin-generator-front/static/js/main.20261a4f.js",
     "static/js/787.8cce51c9.chunk.js": "/fivemin-generator-front/static/js/787.8cce51c9.chunk.js",
     "index.html": "/fivemin-generator-front/index.html",
     "main.a306b681.css.map": "/fivemin-generator-front/static/css/main.a306b681.css.map",
-    "main.e6fada02.js.map": "/fivemin-generator-front/static/js/main.e6fada02.js.map",
+    "main.20261a4f.js.map": "/fivemin-generator-front/static/js/main.20261a4f.js.map",
     "787.8cce51c9.chunk.js.map": "/fivemin-generator-front/static/js/787.8cce51c9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a306b681.css",
-    "static/js/main.e6fada02.js"
+    "static/js/main.20261a4f.js"
   ]
 }
