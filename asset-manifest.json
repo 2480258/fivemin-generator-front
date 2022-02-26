@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/fivemin-generator/static/css/main.a306b681.css",
+    "main.js": "/fivemin-generator/static/js/main.15f9e00f.js",
+    "static/js/787.8cce51c9.chunk.js": "/fivemin-generator/static/js/787.8cce51c9.chunk.js",
+    "index.html": "/fivemin-generator/index.html",
+    "main.a306b681.css.map": "/fivemin-generator/static/css/main.a306b681.css.map",
+    "main.15f9e00f.js.map": "/fivemin-generator/static/js/main.15f9e00f.js.map",
+    "787.8cce51c9.chunk.js.map": "/fivemin-generator/static/js/787.8cce51c9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a306b681.css",
+    "static/js/main.15f9e00f.js"
+  ]
+}
