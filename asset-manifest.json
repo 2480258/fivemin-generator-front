@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/fivemin-generator/static/css/main.a306b681.css",
-    "main.js": "/fivemin-generator/static/js/main.15f9e00f.js",
-    "static/js/787.8cce51c9.chunk.js": "/fivemin-generator/static/js/787.8cce51c9.chunk.js",
-    "index.html": "/fivemin-generator/index.html",
-    "main.a306b681.css.map": "/fivemin-generator/static/css/main.a306b681.css.map",
-    "main.15f9e00f.js.map": "/fivemin-generator/static/js/main.15f9e00f.js.map",
-    "787.8cce51c9.chunk.js.map": "/fivemin-generator/static/js/787.8cce51c9.chunk.js.map"
+    "main.css": "/fivemin-generator-front/static/css/main.a306b681.css",
+    "main.js": "/fivemin-generator-front/static/js/main.e6fada02.js",
+    "static/js/787.8cce51c9.chunk.js": "/fivemin-generator-front/static/js/787.8cce51c9.chunk.js",
+    "index.html": "/fivemin-generator-front/index.html",
+    "main.a306b681.css.map": "/fivemin-generator-front/static/css/main.a306b681.css.map",
+    "main.e6fada02.js.map": "/fivemin-generator-front/static/js/main.e6fada02.js.map",
+    "787.8cce51c9.chunk.js.map": "/fivemin-generator-front/static/js/787.8cce51c9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a306b681.css",
-    "static/js/main.15f9e00f.js"
+    "static/js/main.e6fada02.js"
   ]
 }
